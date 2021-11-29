@@ -27,7 +27,7 @@ int main()
     }
     puts("降序排列后：");
     for(i=0;i<N;i++)
-    puts(*p[i]);
-    h[40]= strcat(*p[4],*p[0]);
+    puts(p[i]);
+    h[40] = *strcat(p[4],p[0]);
     printf("合并后的串:%s\n", h);
 }
