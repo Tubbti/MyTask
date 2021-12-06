@@ -16,6 +16,7 @@ main()
     else if(word==0)
     {  
         word=1;
+        j=0;
         n++;
     }
     
