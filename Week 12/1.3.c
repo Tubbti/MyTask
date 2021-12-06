@@ -6,7 +6,7 @@ int main()
     int a[N],i,t;
     int *p = a,*max,*min;
     fp=fopen("C:\\my\\sz.txt","w");
-    //Linux fp=fopen("/home/tubbti/my/sz.txt","w");
+    //In Linux fp=fopen("/home/tubbti/my/sz.txt","w");
     for(i=0;i<N;i++) scanf("%d",p+i);
     max=min=&a[0];
     for(i=1;i<N;i++) 
