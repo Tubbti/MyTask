@@ -5,52 +5,66 @@ using UnityEngine.SceneManagement;
 
 public class TankHealth : MonoBehaviour {
 
-    public int hp = 120;
-    private int hpTotal;
+    public float hp = 100;
     public Slider hpSlider;
     public GameObject tankExplosion;
-    public int GGflag = 0;
-    private int Jcount;
    // public AudioClip TankDamageAudio;   
     //private Transform audioPosition;//播放位置
     public void OnCollisionEnter( Collision col ) {
         if (col.gameObject.tag == "Walls" || col.gameObject.tag == "Tank") {
-            TakeDamage();
+            RushDamage();
         }
     }
     
 	// Use this for initialization
 	void Start () {
-	    hpTotal = hp;
-        Jcount = this.gameObject.GetComponent<Tank>().counts;
+	    SetHealth(hp);
+       // Jcount = this.gameObject.GetComponent<Tank>().counts;
 	}
-	
+    private void SetHealth(float HP)
+    {
+        hpSlider.value = HP/100;
+    }
+    public void ResetHealth()
+    {
+        hp = 100;
+        hpSlider.value = hp/100;
+    }
 	// Update is called once per frame
-    public void TakeDamage() {
-        if (hp <= 0) return;
-        hp -= Random.Range(10, 20);
-        hpSlider.value = (float)hp /hpTotal;
-        if (hp <= 0) {
-            GameObject.Instantiate(tankExplosion, transform.position + Vector3.up, transform.rotation);
-            GameObject.Destroy(this.gameObject);
-            Jcount--;
-            Invoke("ReloadScene",4);
+    public void RushDamage()
+    {
+        hp -= Random.Range(2,7);
+        SetHealth(hp);
+        if(hp<=0)
+        {
+            OnDeath();
+            hp = 0;
         }
+    }
+    public void TakeDamage() {
+        hp -= Random.Range(10, 20);
+        SetHealth(hp);
+        if(hp <= 0)
+        {
+            OnDeath();
+            hp = 0;
+        }
+    }   
+    public void OnDeath()
+    {    
+        GameObject tankExplosionInstance = Instantiate(tankExplosion);
+        tankExplosionInstance.transform.position = transform.position;
+        Destroy(tankExplosionInstance);
+        gameObject.SetActive(false);
     }
     public void TakeRedDamage()
     {
-        if (hp <= 0) return;
-        hp -= Random.Range(30, 40);
-        hpSlider.value = (float)hp /hpTotal;
-        if (hp <= 0) {
-            GameObject.Instantiate(tankExplosion, transform.position + Vector3.up, transform.rotation);
-            GameObject.Destroy(this.gameObject);
-            Jcount--;
-            Invoke("ReloadScene",4);
+        hp -= Random.Range(30,40);
+        SetHealth(hp);
+        if(hp <= 0)
+        {
+            OnDeath();
+            hp = 0;
         }
-    }
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene("Main");
     }
 }

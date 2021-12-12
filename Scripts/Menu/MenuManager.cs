@@ -2,33 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject BottonPauseMenu;
+    public GameObject PauseMenu;
     public GameObject BottonReload;
     public GameObject BottonExit;
+    public GameObject GameMenu;
     public Text TextClock;
-    public Text TextCount;
     private float m_Timer;
     private int m_Minute;
     private int m_Second;
     private bool flag = false;
-    public int count{
-           get{
-               return count;
-           }
-           set{
-               SetCountText();
-               Invoke("OffCountText",4);
-           }
-    }
     void Start()
     {
-        TextCount.text = ("Game Start\n" +"0 : 0"); 
-        Invoke("OffCountText",4);
-        count = 2-this.gameObject.GetComponent<Tank>().counts;
-        BottonPauseMenu.SetActive(false);
+      //  TextCount.text = ("Game Start\n" +"0 : 0"); 
+       // Invoke("OffCountText",4);
+        PauseMenu.SetActive(false);
         BottonReload.GetComponent<Button>().onClick.AddListener(OnReload);
         BottonExit.GetComponent<Button>().onClick.AddListener(OnExit);
     }
@@ -47,39 +38,25 @@ public class MenuManager : MonoBehaviour
         {
             if(!flag)
             {
-                OnPause();
+                Time.timeScale = 0;
+                PauseMenu.SetActive(true);
+                flag = true;
             }
             else {
-                OnReload();
+                Time.timeScale = 1;
+                PauseMenu.SetActive(false);
+                flag = false;
             }
         }
     }
 
-    public void OnPause()
-    {
-        Time.timeScale = 0;
-        BottonPauseMenu.SetActive(true);
-        flag = true;
-    }
-
     public void OnReload()
     {
-        Time.timeScale = 1f;
-        BottonPauseMenu.SetActive(false);
-        flag = false;
+        SceneManager.LoadScene("Main");
     }
   
     public void OnExit()
     {
         Application.Quit();
-    }
-    public void SetCountText()
-    {
-        TextCount.text = count.ToString() + " : " + count.ToString();
-     //   TextCount.SetActive(true);
-    }
-    public void OffCountText()
-    {
-      //  TextCount.SetActive(false);
     }
 }

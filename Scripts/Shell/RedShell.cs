@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RedShell : MonoBehaviour
 {
-    public float maxLifeTime = 2;
+    public float maxLifeTime = 3;
     
     public GameObject shellExplosionPrefab;
 

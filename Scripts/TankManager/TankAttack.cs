@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class TankAttack : MonoBehaviour {
@@ -23,68 +24,50 @@ public class TankAttack : MonoBehaviour {
 	private float CDtime = 0;
 	public Slider AimSlider;
 	//public AudioClip FireAudio;
-	private int ShellValue;
+	//private int ShellValue;
 	void Start()
 	{
-		ShellValue = this.gameObject.GetComponent<Tank>().ShellValue;
+	//	ShellValue = this.gameObject.ShellValue;
 	}
 	void Update () {
-	    if(Input.GetButtonDown("ChangeShell"+playerNumber)) 
-		{
-			if(ShellValue == 1) ShellValue = 2;
-			else ShellValue = 1;
-		}
 		CDtime += Time.deltaTime ;
-		if(CDtime >0.2f&&ShellValue == 1)
+		if(CDtime >0.2f)
 		{
-			if(Input.GetButtonDown("Fire"+ playerNumber))
-			{
-				fire();
+			if (Input.GetButtonDown("Fire"+ playerNumber)) {
+	       //fire();
+			fireForce = minForce;
+	    	}
+			else if(Input.GetButton("Fire"+ playerNumber)) {
+			fireForce += Time.deltaTime * (maxForce - minForce)/forceLoadingTime;
+			}
+			else if(Input.GetButtonUp("Fire"+playerNumber)) {
+				if(fireForce > maxForce)
+				{
+					fireForce = maxForce;
+					RedFire();
+				}
+				else 
+				{
+					Fire();
+				}
 				CDtime = 0;
+				fireForce = minForce;
 			}
 		}
-		if(CDtime >0.6f&&ShellValue == 2)
-		{
-			RedFire();
-			CDtime = 0;
-		}
+		SetAimSlider();
+	}
+
+	private void Fire()
+	{
+		GameObject shell = GameObject.Instantiate(shellPrefab,firePoint.position,firePoint.rotation) as GameObject;
+		Rigidbody rb = shell.GetComponent<Rigidbody>();			
+		rb.velocity = firePoint.forward * fireForce;
 	}
 	private void RedFire()
-	{	
-		if (Input.GetButtonDown("Fire"+ playerNumber)) {
-	       //fire();
-		   fireForce = minForce;
-	    }
-		else if(Input.GetButton("Fire"+ playerNumber)) {
-			fireForce += Time.deltaTime * (maxForce - minForce)/forceLoadingTime;
-		}
-		else if(Input.GetButtonUp("Fire"+playerNumber)) {
-				if(fireForce > maxForce) fireForce = maxForce;
-				GameObject redshell = Instantiate(RedShellPrefab,firePoint.position,firePoint.rotation);
-				Rigidbody rb = redshell.GetComponent<Rigidbody>();
-				rb.velocity = firePoint.forward * fireForce;
-			}
-		fireForce = minForce;
-		SetAimSlider();
-	}
-	private void fire()
 	{
-		if (Input.GetButtonDown("Fire"+ playerNumber)) {
-	       //fire();
-		   fireForce = minForce;
-	    }
-		else if(Input.GetButton("Fire"+ playerNumber)) {
-			fireForce += Time.deltaTime * (maxForce - minForce)/forceLoadingTime;
-		}
-		else if(Input.GetButtonUp("Fire"+playerNumber)) {
-			if(fireForce > maxForce/2) fireForce = maxForce/2;
-			GameObject shell = Instantiate(shellPrefab,firePoint.position,firePoint.rotation);
-			Rigidbody rb = shell.GetComponent<Rigidbody>();
-			rb.velocity = firePoint.forward * fireForce;
-			}
-		fireForce = minForce;
-		
-		SetAimSlider();
+		GameObject redshell = GameObject.Instantiate(RedShellPrefab,firePoint.position,firePoint.rotation) as GameObject;
+		Rigidbody rrb = redshell.GetComponent<Rigidbody>();
+		rrb.velocity = firePoint.forward * fireForce;
 	}
 	public void SetPlayerNumber(int playerNumber)
     {

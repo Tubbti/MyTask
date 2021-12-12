@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class Tank : MonoBehaviour
+[Serializable]
+public class Tank
 {
     public Color skinColor;
     public Transform spawnPoint;
-    public GameObject tankGameObject;
-    public int playerNumber;
-    public int ShellValue = 1;
-    public int counts = 2;
-    public void SetTankColor(Color color)
+    [SerializeField]
+    private GameObject tankGameObject;
+    [SerializeField]
+    private int playerNumber;
+   // private int ShellValue = 1;
+    private int roundWinnerCount = 0;
+    private void SetTankColor(Color color)
     {
         MeshRenderer[] renderers = 
         tankGameObject.GetComponentsInChildren<MeshRenderer>();
@@ -30,12 +33,36 @@ public class Tank : MonoBehaviour
     {
         this.tankGameObject = tankGameObject;
         this.playerNumber = number;
-        this.ShellValue = 1;
+       // this.ShellValue = 1;
         SetTankColor(this.skinColor);
         SetTankPlayerNumber(this.playerNumber);
     }
     public GameObject GetTankGameObject()
     {
         return tankGameObject;
+    }
+    public int GetRoundWinnerCount()
+    {
+        return roundWinnerCount;
+    }
+    public void IncreaseRoundWinnerCount()
+    {
+        roundWinnerCount++;
+    } 
+    public void Reset()
+    {
+        tankGameObject.SetActive(true);
+        tankGameObject.transform.position = spawnPoint.position;
+        tankGameObject.transform.rotation = spawnPoint.rotation;
+
+        TankHealth th =this.tankGameObject.GetComponent<TankHealth>();
+        th.ResetHealth();
+    }
+    public void Enable(bool enable)
+    {
+        TankAttack ts = this.tankGameObject.GetComponent<TankAttack>();
+        ts.enabled = enable;
+        TankMovement tm = this.tankGameObject.GetComponent<TankMovement>();
+        tm.enabled = enable;
     }
 }
